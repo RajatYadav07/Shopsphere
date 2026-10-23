@@ -1,6 +1,6 @@
 # Render Blueprint for ShopSphere Full-Stack Application
 services:
-  # FastAPI Backend Service
+  # 1. FastAPI Backend Web Service
   - type: web
     name: shopsphere-backend
     env: python
@@ -20,6 +20,22 @@ services:
         value: shopsphere_olist
       - key: CORS_ORIGINS
         value: "*"
-      # MONGODB_URI is marked as sync: false so the user can set it securely in Render dashboard
       - key: MONGODB_URI
+        sync: false
+
+  # 2. React Vite Frontend Static Site
+  - type: web
+    name: shopsphere-frontend
+    env: static
+    region: singapore
+    plan: free
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
         sync: false
