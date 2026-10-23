@@ -1,8 +1,9 @@
+import os
 import logging
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 from pymongo.errors import ConnectionFailure, DuplicateKeyError, PyMongoError
 
 from app.core.config import settings
@@ -111,6 +112,19 @@ app.include_router(settings_router.router, prefix=prefix)
 
 @app.get("/", tags=["Health"])
 def root():
+    dist_index = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "frontend", "dist", "index.html")
+    if os.path.exists(dist_index):
+        return FileResponse(dist_index)
+    return {
+        "project": "ShopSphere",
+        "description": "Premium E-Commerce & MongoDB Analytics Platform",
+        "version": "1.0.0",
+        "documentation": "/docs",
+        "health": "/health"
+    }
+
+@app.get("/api", tags=["Health"])
+def api_info():
     return {
         "project": "ShopSphere",
         "description": "Premium E-Commerce & MongoDB Analytics Platform",

@@ -5,7 +5,18 @@ export const getApiBaseUrl = (): string => {
     const custom = localStorage.getItem('shopsphere_api_url');
     if (custom) return custom.trim();
   }
-  return import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api/v1';
+  
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL.trim();
+  }
+
+  // When deployed to cloud (e.g. *.vercel.app, *.tmp.now, *.onrender.com), use same-origin relative path
+  if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+    return '/api/v1';
+  }
+
+  // Local development fallback
+  return 'http://127.0.0.1:8000/api/v1';
 };
 
 export const apiClient = axios.create({

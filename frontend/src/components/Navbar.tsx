@@ -119,7 +119,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             <>
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span className="hidden sm:inline">MongoDB 8.0</span>
-              <span className="font-semibold">Local</span>
+              <span className="font-semibold">
+                {health?.topology?.includes('ReplicaSet') || health?.database?.includes('olist') ? 'Atlas Cloud' : 'Connected'}
+              </span>
             </>
           ) : (
             <>

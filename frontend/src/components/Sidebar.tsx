@@ -167,7 +167,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </button>
 
           <div className="mt-3 flex items-center justify-between text-[11px] text-slate-500 px-1">
-            <span>Local MongoDB 8.0</span>
+            <span>MongoDB Atlas</span>
             <span className="flex items-center gap-1 text-emerald-400">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
               Connected
