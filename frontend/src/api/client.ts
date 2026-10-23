@@ -1,13 +1,25 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api/v1';
+export const getApiBaseUrl = (): string => {
+  if (typeof window !== 'undefined') {
+    const custom = localStorage.getItem('shopsphere_api_url');
+    if (custom) return custom.trim();
+  }
+  return import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api/v1';
+};
 
 export const apiClient = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: getApiBaseUrl(),
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 10000,
+  timeout: 15000,
+});
+
+// Update baseURL dynamically per request if changed in storage
+apiClient.interceptors.request.use((config) => {
+  config.baseURL = getApiBaseUrl();
+  return config;
 });
 
 apiClient.interceptors.response.use(

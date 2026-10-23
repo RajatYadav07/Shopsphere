@@ -21,6 +21,21 @@ export const SettingsPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [reindexing, setReindexing] = useState<boolean>(false);
   const [reindexSuccess, setReindexSuccess] = useState<string | null>(null);
+  const [apiUrlInput, setApiUrlInput] = useState<string>(
+    localStorage.getItem('shopsphere_api_url') || import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api/v1'
+  );
+  const [apiSaveSuccess, setApiSaveSuccess] = useState<boolean>(false);
+
+  const handleSaveApiUrl = () => {
+    if (apiUrlInput.trim()) {
+      localStorage.setItem('shopsphere_api_url', apiUrlInput.trim());
+    } else {
+      localStorage.removeItem('shopsphere_api_url');
+    }
+    setApiSaveSuccess(true);
+    setTimeout(() => setApiSaveSuccess(false), 3000);
+    fetchStats();
+  };
 
   const fetchStats = async () => {
     try {
@@ -159,6 +174,32 @@ export const SettingsPage: React.FC = () => {
                 <p className="text-[10px] text-slate-400 mt-0.5">documents</p>
               </div>
             ))}
+        </div>
+      </div>
+
+      {/* Backend API Connection Configuration */}
+      <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-subtle">
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="text-base font-bold text-slate-900">Backend API URL Configuration</h3>
+          <Server className="w-4 h-4 text-brand-600" />
+        </div>
+        <p className="text-xs text-slate-500 mb-3">
+          Configure the active FastAPI backend endpoint for cloud hosting (e.g. Render, Railway, or local development).
+        </p>
+        <div className="flex flex-col sm:flex-row gap-2">
+          <input
+            type="text"
+            value={apiUrlInput}
+            onChange={(e) => setApiUrlInput(e.target.value)}
+            placeholder="http://127.0.0.1:8000/api/v1 or https://shopsphere-backend.onrender.com/api/v1"
+            className="flex-1 px-3 py-2 text-xs border border-slate-300 rounded-xl font-mono focus:ring-2 focus:ring-brand-500 outline-none"
+          />
+          <button
+            onClick={handleSaveApiUrl}
+            className="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-semibold shadow-sm transition whitespace-nowrap"
+          >
+            {apiSaveSuccess ? 'Saved & Connected!' : 'Save & Reconnect'}
+          </button>
         </div>
       </div>
 
