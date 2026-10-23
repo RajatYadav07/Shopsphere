@@ -61,13 +61,17 @@ if "http://localhost:5173" not in origins:
 if "http://127.0.0.1:5173" not in origins:
     origins.append("http://127.0.0.1:5173")
 
+# Allow all origins if '*' is specified, or support preview domains dynamically
+allow_all = "*" in origins or settings.ENVIRONMENT == "production"
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
+    allow_origins=["*"] if allow_all else origins,
+    allow_credentials=True if not allow_all else False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 # Global Exception Handlers
 @app.exception_handler(ConnectionFailure)

@@ -1,0 +1,25 @@
+# Render Blueprint for ShopSphere Full-Stack Application
+services:
+  # FastAPI Backend Service
+  - type: web
+    name: shopsphere-backend
+    env: python
+    region: singapore
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.10
+      - key: ENVIRONMENT
+        value: production
+      - key: DATABASE_NAME
+        value: shopsphere_olist
+      - key: CORS_ORIGINS
+        value: "*"
+      # MONGODB_URI is marked as sync: false so the user can set it securely in Render dashboard
+      - key: MONGODB_URI
+        sync: false
